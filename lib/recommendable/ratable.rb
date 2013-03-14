@@ -1,5 +1,6 @@
 require 'recommendable/ratable/likable'
 require 'recommendable/ratable/dislikable'
+require 'recommendable/ratable/bookmarkable'
 
 module Recommendable
   module Ratable
@@ -14,7 +15,8 @@ module Recommendable
         class_eval do
           include Likable
           include Dislikable
-          
+          include Bookmarkable
+
           case
           when defined?(Sequel::Model) && ancestors.include?(Sequel::Model)
             def before_destroy() super and remove_from_recommendable! end
@@ -62,7 +64,7 @@ module Recommendable
             Recommendable.redis.zrem(Recommendable::Helpers::RedisKeyMapper.score_set_for(self.class), id)
 
             # Remove this item's liked_by/disliked_by sets
-            %w[liked_by disliked_by].each do |action|
+            %w[liked_by disliked_by bookmarked_by].each do |action|
               set = Recommendable::Helpers::RedisKeyMapper.send("#{action}_set_for", self.class, id)
               Recommendable.redis.del(set)
             end

@@ -8,16 +8,14 @@ module Recommendable
           end
         end
 
+        %w[liked_by disliked_by bookmarked_by].each do |action|
+          define_method "#{action}_set_for" do |klass, id|
+            [Recommendable.config.redis_namespace, klass.to_s.tableize, id, action].compact.join(':')
+          end
+        end
+
         def similarity_set_for(id)
           [Recommendable.config.redis_namespace, Recommendable.config.user_class.to_s.tableize, id, 'similarities'].compact.join(':')
-        end
-
-        def liked_by_set_for(klass, id)
-          [Recommendable.config.redis_namespace, klass.to_s.tableize, id, 'liked_by'].compact.join(':')
-        end
-
-        def disliked_by_set_for(klass, id)
-          [Recommendable.config.redis_namespace, klass.to_s.tableize, id, 'disliked_by'].compact.join(':')
         end
 
         def score_set_for(klass)

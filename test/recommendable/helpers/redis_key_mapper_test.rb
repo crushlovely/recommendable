@@ -34,6 +34,10 @@ class RedisKeyMapperTest < MiniTest::Unit::TestCase
     assert_equal Recommendable::Helpers::RedisKeyMapper.disliked_by_set_for(Movie, 1), 'recommendable:movies:1:disliked_by'
   end
 
+  def test_output_of_bookmarked_by_set_for
+    assert_equal Recommendable::Helpers::RedisKeyMapper.bookmarked_by_set_for(Movie, 1), 'recommendable:movies:1:bookmarked_by'
+  end
+
   def test_output_of_score_set_for
     assert_equal Recommendable::Helpers::RedisKeyMapper.score_set_for(Movie), 'recommendable:movies:scores'
   end
